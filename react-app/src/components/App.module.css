@@ -1,8 +1,19 @@
 .app {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   height: 100%;
   min-height: 0;
+}
+
+/* ---- Footer ---- */
+.footer {
+  padding: 8px 24px;
+  background: var(--navy);
+  border-top: 1px solid var(--navy-deep);
+  color: var(--gold-soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  text-align: center;
 }
 
 /* ---- Header ---- */

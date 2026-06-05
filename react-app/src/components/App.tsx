@@ -153,6 +153,12 @@ export default function App() {
         </div>
       </div>
 
+      <footer className={styles.footer}>
+        <span>
+          &copy; {new Date().getFullYear()} Costarella Innovations, LLC
+        </span>
+      </footer>
+
       <ResourceModal resource={selected} onClose={() => setSelected(null)} />
     </div>
   );
