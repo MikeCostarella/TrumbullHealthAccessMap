@@ -1,0 +1,167 @@
+.legend {
+  background: var(--bg-card);
+  border-right: 1px solid var(--rule);
+  overflow-y: auto;
+  height: 100%;
+}
+
+.closeBtn {
+  display: none; /* only shown in mobile drawer mode */
+}
+
+.inner {
+  padding: 20px 18px;
+}
+
+.title {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: 1.15rem;
+  color: var(--navy);
+}
+
+.sub {
+  margin: 2px 0 16px;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.item:hover {
+  background: var(--bg);
+}
+
+.marker {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: filter 0.15s, opacity 0.15s;
+}
+
+.marker svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.label {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.count {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  background: var(--bg);
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+/* Disabled (toggled-off) type: gray out the marker and dim the row. */
+.item[aria-pressed="false"] .marker {
+  filter: grayscale(0.85);
+  opacity: 0.5;
+}
+
+.item[aria-pressed="false"] .label {
+  color: var(--ink-soft);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.actionBtn {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: var(--bg);
+  border: 1px solid var(--rule-soft);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.actionBtn:hover {
+  background: var(--rule-soft);
+  color: var(--ink);
+}
+
+/* ---- Mobile drawer behavior ---- */
+@media (max-width: 720px) {
+  .legend {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 85%;
+    z-index: 800;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .legend.open {
+    transform: translateX(0);
+  }
+
+  .closeBtn {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--bg);
+    border-radius: 50%;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+
+  .inner {
+    padding-right: 56px;
+  }
+}

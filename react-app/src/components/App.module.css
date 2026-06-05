@@ -5,6 +5,7 @@
   min-height: 0;
 }
 
+/* ---- Header ---- */
 .header {
   display: flex;
   align-items: center;
@@ -43,7 +44,30 @@
   font-variant-numeric: tabular-nums;
 }
 
-.mapWrap {
+/* ---- Main: legend sidebar + map area ---- */
+.main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 0;
+  position: relative;
+}
+
+.mapArea {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  min-height: 0;
+}
+
+.toolbarWrap {
+  position: relative;
+  z-index: 500;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--rule);
+}
+
+.mapCanvas {
   position: relative;
   min-height: 0;
   overflow: hidden;
@@ -57,8 +81,38 @@
   font-size: 1rem;
   color: var(--ink-soft);
   background: var(--bg);
+  z-index: 400;
 }
 
+.noResults {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 600;
+  background: #fff;
+  padding: 18px 24px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.noResults strong {
+  color: var(--navy);
+}
+
+.noResults p {
+  margin: 6px 0 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+/* Backdrop behind the mobile legend drawer */
+.backdrop {
+  display: none;
+}
+
+/* ---- Selection bar (temporary, pre-modal) ---- */
 .selectionBar {
   position: absolute;
   left: 50%;
@@ -100,4 +154,31 @@
 .closeBtn:hover {
   background: var(--rule-soft);
   color: var(--ink);
+}
+
+/* ---- Responsive: collapse sidebar into a drawer ---- */
+@media (max-width: 720px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 700;
+    background: rgba(21, 41, 74, 0.35);
+  }
+
+  .header {
+    padding: 12px 16px;
+  }
+
+  .title {
+    font-size: 1.35rem;
+  }
+
+  .meta {
+    font-size: 0.78rem;
+  }
 }

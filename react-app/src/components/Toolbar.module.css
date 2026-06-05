@@ -1,0 +1,105 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--rule-soft);
+  border-radius: 6px;
+  padding: 6px 8px;
+  box-shadow: var(--shadow);
+}
+
+.hamburger {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hamburger:hover {
+  background: var(--rule-soft);
+  color: var(--ink);
+}
+
+.searchWrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 6px;
+  min-width: 0;
+}
+
+.searchIcon {
+  flex: 0 0 auto;
+  color: var(--ink-soft);
+}
+
+.search {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font: 400 0.95rem "Inter", sans-serif;
+  color: var(--ink);
+  outline: none;
+  min-width: 0;
+}
+
+.search::placeholder {
+  color: var(--ink-soft);
+}
+
+.filterToggle {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px;
+  height: 36px;
+  border: none;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 6px;
+  font: 500 0.9rem "Inter", sans-serif;
+  cursor: pointer;
+}
+
+.filterToggle:hover {
+  background: var(--navy-deep);
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--gold);
+  color: var(--navy-deep);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.chev {
+  transition: transform 0.2s;
+}
+
+.filterToggle.open .chev {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 720px) {
+  .filterLabel {
+    display: none;
+  }
+  .filterToggle {
+    padding: 0 10px;
+  }
+}
