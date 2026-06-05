@@ -1,0 +1,29 @@
+/* Design tokens carried over verbatim from the original app. */
+:root {
+  --navy: #1F3A5F;
+  --navy-deep: #15294A;
+  --gold: #C49B43;
+  --gold-soft: #E8D49A;
+  --bg: #F7F4ED;
+  --bg-card: #FFFFFF;
+  --ink: #1A1F2E;
+  --ink-soft: #4A5163;
+  --rule: #D8D0C0;
+  --rule-soft: #E9E2D4;
+  --shadow: 0 1px 2px rgba(21,41,74,.06), 0 4px 12px rgba(21,41,74,.04);
+  --shadow-lg: 0 4px 8px rgba(21,41,74,.08), 0 16px 40px rgba(21,41,74,.10);
+
+  /* Type-specific colors for markers and legend */
+  --t-hospital: #B5394A;
+  --t-fqhc: #2E7D5B;
+  --t-urgent: #D97706;
+  --t-primary: #1F3A5F;
+  --t-pharmacy: #6B46C1;
+  --t-dental: #0E7C9B;
+  --t-mh: #B45F2E;
+  --t-vision: #3B6E8F;
+  --t-specialty: #6B6557;
+  --t-health: #7A1F3D;
+  --t-pp: #C2185B;
+  --t-other: #555;
+}
