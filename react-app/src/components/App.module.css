@@ -112,50 +112,6 @@
   display: none;
 }
 
-/* ---- Selection bar (temporary, pre-modal) ---- */
-.selectionBar {
-  position: absolute;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  max-width: calc(100% - 32px);
-  padding: 12px 16px;
-  background: var(--bg-card);
-  border-radius: 8px;
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--rule-soft);
-}
-
-.selectionBar strong {
-  color: var(--navy);
-}
-
-.selectionBar span {
-  color: var(--ink-soft);
-  font-size: 0.88rem;
-}
-
-.closeBtn {
-  border: none;
-  background: var(--bg);
-  color: var(--ink-soft);
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  font-size: 1.1rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.closeBtn:hover {
-  background: var(--rule-soft);
-  color: var(--ink);
-}
-
 /* ---- Responsive: collapse sidebar into a drawer ---- */
 @media (max-width: 720px) {
   .main {

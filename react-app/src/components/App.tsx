@@ -12,6 +12,7 @@ import { ResourceMap } from "./ResourceMap";
 import { Legend } from "./Legend";
 import { Toolbar } from "./Toolbar";
 import { FilterPanel } from "./FilterPanel";
+import { ResourceModal } from "./ResourceModal";
 import styles from "./App.module.css";
 
 export default function App() {
@@ -125,21 +126,7 @@ export default function App() {
         </div>
       </div>
 
-      {selected && (
-        <div className={styles.selectionBar} role="status">
-          <strong>{selected.name}</strong>
-          <span>
-            {selected.type} &middot; {selected.city}, {selected.state}
-          </span>
-          <button
-            className={styles.closeBtn}
-            onClick={() => setSelected(null)}
-            aria-label="Dismiss"
-          >
-            &times;
-          </button>
-        </div>
-      )}
+      <ResourceModal resource={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }
