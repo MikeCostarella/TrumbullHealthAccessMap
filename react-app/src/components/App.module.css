@@ -50,6 +50,14 @@
   grid-template-columns: 280px 1fr;
   min-height: 0;
   position: relative;
+  transition: grid-template-columns 0.22s ease;
+}
+
+/* Desktop rail-collapse: narrow the sidebar column to the icon rail so the
+   map reclaims the width. The mobile media query below uses a single column
+   regardless, so this only affects desktop. */
+.main[data-legend-collapsed="true"] {
+  grid-template-columns: 64px 1fr;
 }
 
 .mapArea {

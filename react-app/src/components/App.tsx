@@ -31,6 +31,7 @@ export default function App() {
 
   const [selected, setSelected] = useState<Resource | null>(null);
   const [legendOpen, setLegendOpen] = useState(false); // mobile drawer
+  const [legendCollapsed, setLegendCollapsed] = useState(false); // desktop rail
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [povertyVisible, setPovertyVisible] = useState(false);
   const [leVisible, setLeVisible] = useState(false);
@@ -58,7 +59,10 @@ export default function App() {
         </div>
       </header>
 
-      <div className={styles.main}>
+      <div
+        className={styles.main}
+        data-legend-collapsed={legendCollapsed ? "true" : undefined}
+      >
         <Legend
           enabledTypes={filters.enabledTypes}
           countsByType={countsByType}
@@ -71,6 +75,8 @@ export default function App() {
           onHideAll={() => dispatch({ type: "hideAllTypes" })}
           open={legendOpen}
           onClose={() => setLegendOpen(false)}
+          collapsed={legendCollapsed}
+          onToggleCollapsed={() => setLegendCollapsed((v) => !v)}
         />
 
         {/* Backdrop behind the mobile legend drawer */}

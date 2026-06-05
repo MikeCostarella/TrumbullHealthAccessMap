@@ -2,11 +2,43 @@
   background: var(--bg-card);
   border-right: 1px solid var(--rule);
   overflow-y: auto;
+  overflow-x: hidden;
   height: 100%;
+  position: relative;
 }
 
 .closeBtn {
   display: none; /* only shown in mobile drawer mode */
+}
+
+/* ---- Desktop collapse/expand toggle ----
+   A small chevron tab pinned to the sidebar's top-right edge. Hidden on
+   mobile, where the hamburger + closeBtn drawer controls are used instead. */
+.collapseBtn {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule-soft);
+  background: var(--bg);
+  border-radius: 6px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.collapseBtn:hover {
+  background: var(--rule-soft);
+  color: var(--ink);
+}
+
+.collapseChevron {
+  font-size: 0.95rem;
+  line-height: 1;
 }
 
 .inner {
@@ -125,8 +157,77 @@
   color: var(--ink);
 }
 
+/* ---- Desktop collapsed (icon rail) state ----
+   When collapsed, the sidebar narrows to a thin rail showing only the colored
+   type markers, so the map reclaims the width while the legend stays usable:
+   each marker still toggles its type, and a native title tooltip surfaces the
+   label + count. The grid column width is driven from App (App.module.css);
+   here we just hide the text and tighten spacing. Scoped to desktop — the
+   mobile media query below overrides .collapsed back to drawer behavior. */
+.collapsed .inner {
+  padding: 14px 0;
+}
+
+.collapsed .title,
+.collapsed .sub,
+.collapsed .actions,
+.collapsed .label,
+.collapsed .count {
+  display: none;
+}
+
+.collapsed .list {
+  align-items: center;
+  gap: 4px;
+  /* Leave room for the collapse tab at the top of the rail. */
+  margin-top: 30px;
+}
+
+.collapsed .item {
+  width: auto;
+  justify-content: center;
+  padding: 5px;
+  gap: 0;
+}
+
+.collapsed .collapseBtn {
+  right: 50%;
+  transform: translateX(50%);
+}
+
 /* ---- Mobile drawer behavior ---- */
 @media (max-width: 720px) {
+  /* The desktop collapse tab and collapsed rail don't apply on mobile, where
+     the legend is a full drawer toggled by the hamburger. */
+  .collapseBtn {
+    display: none;
+  }
+
+  .legend.collapsed .inner {
+    padding: 20px 56px 20px 18px;
+  }
+
+  .legend.collapsed .title,
+  .legend.collapsed .sub,
+  .legend.collapsed .actions,
+  .legend.collapsed .label,
+  .legend.collapsed .count {
+    display: revert;
+  }
+
+  .legend.collapsed .list {
+    align-items: stretch;
+    gap: 2px;
+    margin-top: 0;
+  }
+
+  .legend.collapsed .item {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 7px 8px;
+    gap: 10px;
+  }
+
   .legend {
     position: absolute;
     top: 0;
