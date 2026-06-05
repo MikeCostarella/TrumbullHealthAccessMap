@@ -3,6 +3,7 @@ import type { Resource } from "../types/resource";
 import { ResourceMarkers } from "./ResourceMarkers";
 import { PovertyLayer } from "./PovertyLayer";
 import { LifeExpectancyLayer } from "./LifeExpectancyLayer";
+import { UserLocationLayer } from "./UserLocationLayer";
 import { useInvalidateSize } from "../hooks/useInvalidateSize";
 import styles from "./ResourceMap.module.css";
 
@@ -55,6 +56,7 @@ export function ResourceMap({
       <PovertyLayer visible={povertyVisible} />
       <LifeExpectancyLayer visible={leVisible} />
       <ResourceMarkers resources={resources} onSelect={onSelect} />
+      <UserLocationLayer />
       <MapEffects />
     </MapContainer>
   );

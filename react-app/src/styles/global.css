@@ -80,3 +80,88 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ---- "You are here" geolocation marker ----
+   Leaflet-injected divIcon (.user-location-marker) + permanent tooltip,
+   ported from the original app. Lives in global scope because Leaflet
+   builds these elements outside React. */
+
+.user-location-marker {
+  position: relative;
+  width: 28px;
+  height: 28px;
+}
+
+.user-location-marker .ulm-dot {
+  position: absolute;
+  inset: 7px;
+  background: #00b7e5; /* bright cyan — pops against the red poverty ramp */
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}
+
+.user-location-marker .ulm-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #00b7e5;
+  opacity: 0.45;
+  z-index: 1;
+  animation: ulm-pulse 2s ease-out infinite;
+  transform-origin: center;
+}
+
+/* Second pulse, offset in time for a richer effect */
+.user-location-marker .ulm-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #00b7e5;
+  opacity: 0.55;
+  animation: ulm-pulse 2s ease-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes ulm-pulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.6;
+  }
+  80% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .user-location-marker .ulm-pulse,
+  .user-location-marker .ulm-pulse::after {
+    animation: none;
+    opacity: 0.3;
+  }
+}
+
+.leaflet-tooltip.user-location-tooltip {
+  background: #00658a; /* darker cyan for the tooltip pill */
+  color: white;
+  border: none;
+  font: 700 0.74rem "Inter", sans-serif;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+.leaflet-tooltip.user-location-tooltip::before {
+  border-top-color: #00658a !important;
+}
