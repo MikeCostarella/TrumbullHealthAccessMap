@@ -14,6 +14,7 @@ import { Toolbar } from "./Toolbar";
 import { FilterPanel } from "./FilterPanel";
 import { ResourceModal } from "./ResourceModal";
 import { PovertyControls } from "./PovertyControls";
+import { LifeExpectancyControls } from "./LifeExpectancyControls";
 import styles from "./App.module.css";
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
   const [legendOpen, setLegendOpen] = useState(false); // mobile drawer
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [povertyVisible, setPovertyVisible] = useState(false);
+  const [leVisible, setLeVisible] = useState(false);
 
   const total = resources.length;
   const shown = filtered.length;
@@ -120,6 +122,13 @@ export default function App() {
                 resources={filtered}
                 onSelect={setSelected}
                 povertyVisible={povertyVisible}
+                leVisible={leVisible}
+              />
+            )}
+            {ready && (
+              <LifeExpectancyControls
+                visible={leVisible}
+                onToggle={() => setLeVisible((v) => !v)}
               />
             )}
             {ready && (

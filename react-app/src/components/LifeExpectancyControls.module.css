@@ -1,6 +1,6 @@
 .toggle {
   position: absolute;
-  top: 56px; /* sits just below the Life expectancy toggle */
+  top: 12px; /* top-right, above the Poverty rate toggle */
   right: 12px;
   z-index: 500;
   display: flex;
@@ -30,15 +30,18 @@
   width: 13px;
   height: 13px;
   border-radius: 3px;
-  /* A representative red from the poverty ramp. */
-  background: linear-gradient(135deg, #fee5d9, #a50f15);
+  /* Representative sand-to-teal LE ramp. */
+  background: linear-gradient(135deg, #d17a3f, #1e6f8e);
   flex: 0 0 auto;
 }
 
 .legend {
   position: absolute;
-  bottom: 20px;
-  left: 12px;
+  /* Bottom-right corner — keeps it clear of the poverty legend, which
+     sits bottom-left. Independent corners never overlap regardless of
+     either legend's collapsed/expanded height. */
+  bottom: 28px;
+  right: 12px;
   z-index: 500;
   width: 220px;
   background: var(--bg-card);
@@ -111,14 +114,14 @@
 
 @media (max-width: 720px) {
   .toggle {
-    top: 52px;
+    top: 10px;
     right: 8px;
     font-size: 0.72rem;
     padding: 6px 9px;
   }
   .legend {
     bottom: 24px;
-    left: 8px;
+    right: 8px;
     width: 190px;
   }
 }

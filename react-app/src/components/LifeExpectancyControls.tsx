@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
-import { POVERTY_LEGEND } from "../data/povertyData";
+import { LE_LEGEND } from "../data/lifeExpectancyData";
 import { useIsMobile } from "../hooks/useIsMobile";
-import styles from "./PovertyControls.module.css";
+import styles from "./LifeExpectancyControls.module.css";
 
-interface PovertyControlsProps {
+interface LifeExpectancyControlsProps {
   visible: boolean;
   onToggle: () => void;
 }
 
-/** The "Poverty rate" toggle button (top-right of the map) plus the
- *  collapsible legend (bottom-left), shown only when the overlay is on.
+/** "Life expectancy" toggle (top-right) + its own legend (bottom-right).
  *  The legend starts collapsed on mobile and auto-collapses when the
  *  viewport crosses into mobile width. */
-export function PovertyControls({ visible, onToggle }: PovertyControlsProps) {
+export function LifeExpectancyControls({
+  visible,
+  onToggle,
+}: LifeExpectancyControlsProps) {
   const isMobile = useIsMobile();
   const [legendOpen, setLegendOpen] = useState(!isMobile);
 
@@ -27,10 +29,10 @@ export function PovertyControls({ visible, onToggle }: PovertyControlsProps) {
         className={styles.toggle}
         aria-pressed={visible}
         onClick={onToggle}
-        aria-label="Toggle poverty rate overlay"
+        aria-label="Toggle life expectancy overlay"
       >
         <span className={styles.dot} />
-        <span>Poverty rate</span>
+        <span>Life expectancy</span>
       </button>
 
       {visible && (
@@ -42,12 +44,12 @@ export function PovertyControls({ visible, onToggle }: PovertyControlsProps) {
             aria-expanded={legendOpen}
             onClick={() => setLegendOpen((v) => !v)}
           >
-            <span className={styles.legendTitle}>Poverty rate by area</span>
+            <span className={styles.legendTitle}>Life expectancy</span>
             <span className={styles.chev}>▾</span>
           </button>
           {legendOpen && (
             <div className={styles.legendBody}>
-              {POVERTY_LEGEND.map((row) => (
+              {LE_LEGEND.map((row) => (
                 <div key={row.label} className={styles.row}>
                   <span
                     className={styles.swatch}
@@ -57,8 +59,7 @@ export function PovertyControls({ visible, onToggle }: PovertyControlsProps) {
                 </div>
               ))}
               <div className={styles.note}>
-                ACS 5-yr estimates. Township figures are remainder-of-township
-                where a city/village/CDP is carved out.
+                CDC/NCHS USALEEP, 2010–2015, by census tract.
               </div>
             </div>
           )}

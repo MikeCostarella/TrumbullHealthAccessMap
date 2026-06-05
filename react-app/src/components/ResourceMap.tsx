@@ -2,6 +2,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import type { Resource } from "../types/resource";
 import { ResourceMarkers } from "./ResourceMarkers";
 import { PovertyLayer } from "./PovertyLayer";
+import { LifeExpectancyLayer } from "./LifeExpectancyLayer";
 import { useInvalidateSize } from "../hooks/useInvalidateSize";
 import styles from "./ResourceMap.module.css";
 
@@ -21,6 +22,7 @@ interface ResourceMapProps {
   resources: Resource[];
   onSelect: (resource: Resource) => void;
   povertyVisible: boolean;
+  leVisible: boolean;
 }
 
 /** Runs side-effect hooks that need the Leaflet map instance from context. */
@@ -33,6 +35,7 @@ export function ResourceMap({
   resources,
   onSelect,
   povertyVisible,
+  leVisible,
 }: ResourceMapProps) {
   return (
     <MapContainer
@@ -50,6 +53,7 @@ export function ResourceMap({
         crossOrigin
       />
       <PovertyLayer visible={povertyVisible} />
+      <LifeExpectancyLayer visible={leVisible} />
       <ResourceMarkers resources={resources} onSelect={onSelect} />
       <MapEffects />
     </MapContainer>
