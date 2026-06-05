@@ -13,6 +13,7 @@ import { Legend } from "./Legend";
 import { Toolbar } from "./Toolbar";
 import { FilterPanel } from "./FilterPanel";
 import { ResourceModal } from "./ResourceModal";
+import { PovertyControls } from "./PovertyControls";
 import styles from "./App.module.css";
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
   const [selected, setSelected] = useState<Resource | null>(null);
   const [legendOpen, setLegendOpen] = useState(false); // mobile drawer
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [povertyVisible, setPovertyVisible] = useState(false);
 
   const total = resources.length;
   const shown = filtered.length;
@@ -114,7 +116,17 @@ export default function App() {
               <div className={styles.overlayMsg}>Loading resources&hellip;</div>
             )}
             {ready && (
-              <ResourceMap resources={filtered} onSelect={setSelected} />
+              <ResourceMap
+                resources={filtered}
+                onSelect={setSelected}
+                povertyVisible={povertyVisible}
+              />
+            )}
+            {ready && (
+              <PovertyControls
+                visible={povertyVisible}
+                onToggle={() => setPovertyVisible((v) => !v)}
+              />
             )}
             {ready && shown === 0 && (
               <div className={styles.noResults}>

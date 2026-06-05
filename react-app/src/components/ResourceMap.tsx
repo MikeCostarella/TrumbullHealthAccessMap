@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 import type { Resource } from "../types/resource";
 import { ResourceMarkers } from "./ResourceMarkers";
+import { PovertyLayer } from "./PovertyLayer";
 import { useInvalidateSize } from "../hooks/useInvalidateSize";
 import styles from "./ResourceMap.module.css";
 
@@ -19,6 +20,7 @@ const TILE_ATTRIBUTION = "Tiles &copy; Esri \u2014 Esri, DeLorme, NAVTEQ";
 interface ResourceMapProps {
   resources: Resource[];
   onSelect: (resource: Resource) => void;
+  povertyVisible: boolean;
 }
 
 /** Runs side-effect hooks that need the Leaflet map instance from context. */
@@ -27,7 +29,11 @@ function MapEffects() {
   return null;
 }
 
-export function ResourceMap({ resources, onSelect }: ResourceMapProps) {
+export function ResourceMap({
+  resources,
+  onSelect,
+  povertyVisible,
+}: ResourceMapProps) {
   return (
     <MapContainer
       className={styles.map}
@@ -43,6 +49,7 @@ export function ResourceMap({ resources, onSelect }: ResourceMapProps) {
         maxZoom={MAX_ZOOM}
         crossOrigin
       />
+      <PovertyLayer visible={povertyVisible} />
       <ResourceMarkers resources={resources} onSelect={onSelect} />
       <MapEffects />
     </MapContainer>

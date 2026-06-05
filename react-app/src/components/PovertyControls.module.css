@@ -1,0 +1,124 @@
+.toggle {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  font: 500 0.82rem "Inter", sans-serif;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background: var(--bg);
+}
+
+.toggle[aria-pressed="true"] {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  /* A representative red from the poverty ramp. */
+  background: linear-gradient(135deg, #fee5d9, #a50f15);
+  flex: 0 0 auto;
+}
+
+.legend {
+  position: absolute;
+  bottom: 20px;
+  left: 12px;
+  z-index: 500;
+  width: 220px;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.legendHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  font: 600 0.82rem "Inter", sans-serif;
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.legendHeader:hover {
+  background: var(--bg);
+}
+
+.legendTitle {
+  flex: 1;
+  text-align: left;
+}
+
+.chev {
+  transition: transform 0.2s;
+  color: var(--ink-soft);
+}
+
+.collapsed .chev {
+  transform: rotate(-90deg);
+}
+
+.legendBody {
+  padding: 0 12px 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: var(--ink);
+  padding: 2px 0;
+}
+
+.swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.note {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule-soft);
+  color: var(--ink-soft);
+  font-size: 0.66rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+  .toggle {
+    top: 10px;
+    left: 8px;
+    font-size: 0.72rem;
+    padding: 6px 9px;
+  }
+  .legend {
+    bottom: 24px;
+    left: 8px;
+    width: 190px;
+  }
+}
