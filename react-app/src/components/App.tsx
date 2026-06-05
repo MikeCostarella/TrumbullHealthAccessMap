@@ -1,68 +1,61 @@
-import { useMemo } from "react";
-import type { FacilityType } from "../types/resource";
+import { useState } from "react";
+import type { Resource } from "../types/resource";
 import { useResources } from "../hooks/useResources";
-import {
-  FACILITY_TYPES_IN_ORDER,
-  metaFor,
-} from "../data/facilityTypes";
+import { ResourceMap } from "./ResourceMap";
 import styles from "./App.module.css";
 
-/**
- * Scaffold verification screen. Confirms the data layer works end to end:
- * fetch -> normalize -> typed metadata -> render. This is temporary; it will
- * be replaced by the real map UI in the next migration slice.
- */
 export default function App() {
   const { resources, loading, error } = useResources("trumbull");
-
-  const countsByType = useMemo(() => {
-    const counts = new Map<FacilityType, number>();
-    for (const r of resources) {
-      counts.set(r.type, (counts.get(r.type) ?? 0) + 1);
-    }
-    return counts;
-  }, [resources]);
+  const [selected, setSelected] = useState<Resource | null>(null);
 
   return (
     <div className={styles.app}>
-      <p className={styles.subtitle}>Trumbull County Combined Health District</p>
-      <h1 className={styles.title}>Access to Care</h1>
-
-      {loading && <p className={styles.status}>Loading resources&hellip;</p>}
-
-      {error && (
-        <p className={`${styles.status} ${styles.error}`}>
-          Could not load data: {error.message}
-        </p>
-      )}
-
-      {!loading && !error && (
-        <>
-          <p className={styles.count}>
-            Loaded <strong>{resources.length}</strong> mappable resources across{" "}
-            <strong>{countsByType.size}</strong> facility types.
+      <header className={styles.header}>
+        <div>
+          <p className={styles.subtitle}>
+            Trumbull County Combined Health District
           </p>
+          <h1 className={styles.title}>Access to Care</h1>
+        </div>
+        <div className={styles.meta}>
+          {!loading && !error && (
+            <span className={styles.count}>
+              <strong>{resources.length}</strong> resources
+            </span>
+          )}
+        </div>
+      </header>
 
-          <ul className={styles.breakdown}>
-            {FACILITY_TYPES_IN_ORDER.filter((t) => countsByType.has(t)).map(
-              (type) => {
-                const meta = metaFor(type);
-                return (
-                  <li key={type} className={styles.row}>
-                    <span
-                      className={styles.marker}
-                      style={{ background: meta.color }}
-                      // Inline SVG icon string from TYPE_META.
-                      dangerouslySetInnerHTML={{ __html: meta.icon }}
-                    />
-                    <span className={styles.label}>{meta.short ?? type}</span>
-                    <span className={styles.tally}>{countsByType.get(type)}</span>
-                  </li>
-                );
-              },
-            )}
-          </ul>
-        </>
+      <main className={styles.mapWrap}>
+        {error && (
+          <div className={styles.overlayMsg}>
+            Could not load data: {error.message}
+          </div>
+        )}
+        {loading && (
+          <div className={styles.overlayMsg}>Loading resources&hellip;</div>
+        )}
+        {!loading && !error && (
+          <ResourceMap resources={resources} onSelect={setSelected} />
+        )}
+      </main>
+
+      {/* Temporary selection readout; replaced by a proper modal in the
+          next slice. */}
+      {selected && (
+        <div className={styles.selectionBar} role="status">
+          <strong>{selected.name}</strong>
+          <span>
+            {selected.type} &middot; {selected.city}, {selected.state}
+          </span>
+          <button
+            className={styles.closeBtn}
+            onClick={() => setSelected(null)}
+            aria-label="Dismiss"
+          >
+            &times;
+          </button>
+        </div>
       )}
     </div>
   );

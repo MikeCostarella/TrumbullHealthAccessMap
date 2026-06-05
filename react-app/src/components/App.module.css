@@ -1,89 +1,103 @@
 .app {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 40px 24px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  min-height: 0;
 }
 
-.title {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 500;
-  font-size: 1.8rem;
-  color: var(--navy);
-  margin: 0 0 4px;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: var(--navy);
+  color: #fff;
+  border-bottom: 3px solid var(--gold);
 }
 
 .subtitle {
-  font-size: 0.78rem;
+  margin: 0 0 2px;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-soft);
-  margin: 0 0 24px;
+  letter-spacing: 0.14em;
+  color: var(--gold-soft);
 }
 
-.count {
-  font-size: 1.05rem;
-  margin: 0 0 24px;
+.title {
+  margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.meta {
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--gold-soft);
 }
 
 .count strong {
+  color: #fff;
   font-variant-numeric: tabular-nums;
 }
 
-.breakdown {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.mapWrap {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.row {
+.overlayMsg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  background: var(--bg);
+}
+
+.selectionBar {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 4px;
+  gap: 14px;
+  max-width: calc(100% - 32px);
+  padding: 12px 16px;
   background: var(--bg-card);
-  box-shadow: var(--shadow);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--rule-soft);
 }
 
-.marker {
-  flex: 0 0 auto;
+.selectionBar strong {
+  color: var(--navy);
+}
+
+.selectionBar span {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+}
+
+.closeBtn {
+  border: none;
+  background: var(--bg);
+  color: var(--ink-soft);
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
-.marker svg {
-  width: 14px;
-  height: 14px;
-  display: block;
-}
-
-.label {
-  flex: 1;
-  font-weight: 500;
-}
-
-.tally {
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-soft);
-  background: var(--bg);
-  padding: 3px 9px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-}
-
-.status {
-  font-size: 1rem;
-  color: var(--ink-soft);
-}
-
-.error {
-  color: var(--t-hospital);
+.closeBtn:hover {
+  background: var(--rule-soft);
+  color: var(--ink);
 }
