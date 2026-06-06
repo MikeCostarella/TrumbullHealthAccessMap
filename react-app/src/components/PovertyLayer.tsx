@@ -4,7 +4,8 @@ import L from "leaflet";
 import type { GeoJsonObject } from "geojson";
 import {
   BOUNDARY_BASE,
-  BOUNDARY_QUERY,
+  BOUNDARY_QUERY_MUNI,
+  BOUNDARY_QUERY_TOWNSHIP,
   povertyColor,
   povertyLookup,
 } from "../data/povertyData";
@@ -88,11 +89,27 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
       labelMarker.addTo(map);
     };
 
-    const buildFill = (geo: GeoJsonObject, fillOpacity: number) =>
+    // The jurisdiction name lives under different GIS fields per layer:
+    // townships expose `TOWNSHIP`, munis expose `NAME`.
+    const featureName = (
+      feature: { properties?: Record<string, unknown> | null } | undefined,
+      kind: "township" | "muni",
+    ): string | null => {
+      const props = feature?.properties;
+      if (!props) return null;
+      const raw = kind === "township" ? props.TOWNSHIP : props.NAME;
+      return typeof raw === "string" ? raw : null;
+    };
+
+    const buildFill = (
+      geo: GeoJsonObject,
+      fillOpacity: number,
+      kind: "township" | "muni",
+    ) =>
       L.geoJSON(geo, {
         pane: "poverty",
         style: (feature) => {
-          const rec = povertyLookup(feature?.properties?.NAME);
+          const rec = povertyLookup(featureName(feature, kind), kind);
           return {
             color: "transparent",
             weight: 0,
@@ -101,7 +118,7 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
           };
         },
         onEachFeature: (feature, layer) => {
-          const rec = povertyLookup(feature?.properties?.NAME);
+          const rec = povertyLookup(featureName(feature, kind), kind);
           if (rec) {
             const pct = (rec.rate * 100).toFixed(1) + "%";
             const remainder = rec.remainder
@@ -127,7 +144,7 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
         pane,
         style,
         onEachFeature: (feature, layer) => {
-          const name = feature?.properties?.NAME;
+          const name = featureName(feature, kind);
           if (name) {
             const pretty = String(name)
               .replace(/\s+TOWNSHIP\s*$/i, "")
@@ -163,12 +180,15 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
     };
     map.on("zoomend", updateLabelVisibility);
 
-    // Townships (layer 109): fill first, then dashed outline.
-    fetch(`${BOUNDARY_BASE}/109${BOUNDARY_QUERY}`)
+    // Townships (layer 109): name field is TOWNSHIP, not NAME. Fill first,
+    // then dashed outline.
+    fetch(`${BOUNDARY_BASE}/109${BOUNDARY_QUERY_TOWNSHIP}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((geo: GeoJsonObject | null) => {
-        if (!geo) return;
-        buildFill(geo, 0.65);
+      .then((geo: (GeoJsonObject & { features?: unknown[] }) | null) => {
+        // Guard on features: an ArcGIS query error comes back as 200 OK with
+        // an {"error":...} body, so r.ok isn't enough to know we got geometry.
+        if (!geo || !geo.features) return;
+        buildFill(geo, 0.65, "township");
         buildOutline(
           geo,
           "townships",
@@ -187,12 +207,13 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
         /* silent — overlay is nice-to-have */
       });
 
-    // Munis (layer 108): fill painted over townships, then solid navy outline.
-    fetch(`${BOUNDARY_BASE}/108${BOUNDARY_QUERY}`)
+    // Munis (layer 108): name field is NAME. Fill painted over townships, then
+    // solid navy outline.
+    fetch(`${BOUNDARY_BASE}/108${BOUNDARY_QUERY_MUNI}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((geo: GeoJsonObject | null) => {
-        if (!geo) return;
-        buildFill(geo, 0.7);
+      .then((geo: (GeoJsonObject & { features?: unknown[] }) | null) => {
+        if (!geo || !geo.features) return;
+        buildFill(geo, 0.7, "muni");
         buildOutline(
           geo,
           "munis",

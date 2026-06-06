@@ -77,12 +77,27 @@ export function povertyColor(rate: number | null | undefined): string {
   return "#FFF7F3";
 }
 
-/** Resolve a GIS feature NAME to its poverty record, with suffix fallback. */
+/**
+ * Resolve a GIS feature name to its poverty record.
+ *
+ * `kind` disambiguates the city/township name collisions: the township GIS
+ * layer returns bare names (e.g. "WARREN", "HUBBARD") that also match a CITY
+ * key with a very different poverty rate. For townships we therefore try the
+ * "<NAME> TOWNSHIP" key FIRST, so Warren Twp. (0.13) and Hubbard Twp. (0.099)
+ * resolve correctly instead of grabbing Warren/Hubbard city. Townships whose
+ * data key is bare (HOWLAND, LIBERTY, …) still fall through to the exact match.
+ */
 export function povertyLookup(
   rawName: string | null | undefined,
+  kind?: "township" | "muni",
 ): PovertyRecord | null {
   if (!rawName) return null;
   const upper = rawName.toUpperCase().trim();
+  // Township-first: prefer the explicit "<NAME> TOWNSHIP" key when present.
+  if (kind === "township") {
+    const twpKey = `${upper} TOWNSHIP`;
+    if (POVERTY_DATA[twpKey]) return POVERTY_DATA[twpKey];
+  }
   if (POVERTY_DATA[upper]) return POVERTY_DATA[upper];
   const stripped = upper.replace(/\s+(CITY|VILLAGE|TOWNSHIP)\s*$/i, "").trim();
   if (POVERTY_DATA[stripped]) return POVERTY_DATA[stripped];
@@ -100,8 +115,19 @@ export const POVERTY_LEGEND: { color: string; label: string }[] = [
   { color: "#E8E4DA", label: "No data" },
 ];
 
-/** County GIS boundary service: layer 108 = munis, 109 = townships. */
+/** County GIS boundary service: layer 108 = munis, 109 = townships.
+ *
+ * The two layers expose the jurisdiction name under DIFFERENT field names:
+ * layer 108 (Admin/munis) uses `NAME`, layer 109 (Townships) uses `TOWNSHIP`.
+ * Requesting the wrong field returns an ArcGIS 400 ("Failed to execute query")
+ * wrapped in a 200 response, so each layer must request its own field. */
 export const BOUNDARY_BASE =
   "https://webgis.co.trumbull.oh.us/gisserver/rest/services/Maps/Tax_Map_WM/MapServer";
-export const BOUNDARY_QUERY =
+export const BOUNDARY_QUERY_MUNI =
   "/query?where=1%3D1&outFields=NAME&outSR=4326&f=geojson";
+export const BOUNDARY_QUERY_TOWNSHIP =
+  "/query?where=1%3D1&outFields=TOWNSHIP&outSR=4326&f=geojson";
+
+/** @deprecated Use BOUNDARY_QUERY_MUNI / BOUNDARY_QUERY_TOWNSHIP. Kept as the
+ *  muni-field query for backward compatibility. */
+export const BOUNDARY_QUERY = BOUNDARY_QUERY_MUNI;
