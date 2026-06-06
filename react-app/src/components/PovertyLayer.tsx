@@ -20,8 +20,8 @@ interface PovertyLayerProps {
  * layers directly through the map instance from context.
  *
  * Panes (z-index): poverty fill (340) < township outlines (350) <
- * muni outlines (360), all below markers (600). Toggling visibility just
- * shows/hides the fill pane and the outline layers.
+ * muni outlines (360), all below markers (600). The boundary outline panes
+ * stay visible at all times; the poverty toggle only shows/hides the fill pane.
  *
  * If a fetch fails (server down, CORS), the overlay simply doesn't appear —
  * the rest of the map is unaffected.
@@ -151,14 +151,13 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
       });
   }, [map]);
 
-  // Reflect the `visible` prop by toggling the three panes' display.
+  // Reflect the `visible` prop by toggling only the poverty fill pane. The
+  // municipal/township outline panes stay visible at all times so the
+  // boundaries render on the base map regardless of the poverty overlay
+  // (matching the original app). Their hover tooltips remain active too.
   useEffect(() => {
     const fill = fillPaneRef.current;
     if (fill) fill.style.display = visible ? "" : "none";
-    const tp = map.getPane("townships");
-    const mp = map.getPane("munis");
-    if (tp) tp.style.display = visible ? "" : "none";
-    if (mp) mp.style.display = visible ? "" : "none";
   }, [visible, map]);
 
   return null;
