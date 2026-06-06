@@ -50,6 +50,32 @@
   color: var(--gold-soft);
 }
 
+.credit {
+  font-size: 0.78rem;
+  color: var(--gold-soft);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.credit strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.updated {
+  font-size: 0.72rem;
+  color: var(--gold-soft);
+  font-weight: 400;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
+.count {
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
 .count strong {
   color: #fff;
   font-variant-numeric: tabular-nums;
@@ -155,5 +181,19 @@
 
   .meta {
     font-size: 0.78rem;
+  }
+
+  /* Match the original's mobile header: drop the resource count, shrink the
+     credit/updated lines so the header stays compact. */
+  .count {
+    display: none;
+  }
+
+  .credit {
+    font-size: 0.7rem;
+  }
+
+  .updated {
+    font-size: 0.66rem;
   }
 }

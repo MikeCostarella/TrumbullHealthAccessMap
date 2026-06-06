@@ -17,6 +17,28 @@ import { PovertyControls } from "./PovertyControls";
 import { LifeExpectancyControls } from "./LifeExpectancyControls";
 import styles from "./App.module.css";
 
+// Format the compile-time build timestamp (injected by Vite) into the
+// original app's style: "May 21, 2026 at 1:44 PM EDT". Uses the viewer's
+// local timezone so the zone abbreviation is correct for whoever's looking.
+function formatBuildTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const date = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(d);
+  const time = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZoneName: "short",
+  }).format(d);
+  return `${date} at ${time}`;
+}
+
+const BUILD_TIME_LABEL = formatBuildTime(__BUILD_TIME__);
+
 export default function App() {
   const { resources, loading, error } = useResources("trumbull");
   const [filters, dispatch] = useReducer(
@@ -50,6 +72,12 @@ export default function App() {
           <h1 className={styles.title}>Access to Care</h1>
         </div>
         <div className={styles.meta}>
+          <div className={styles.credit}>
+            Created by <strong>Costarella Innovations, LLC</strong>
+          </div>
+          {BUILD_TIME_LABEL && (
+            <div className={styles.updated}>Updated {BUILD_TIME_LABEL}</div>
+          )}
           {ready && (
             <span className={styles.count}>
               Showing <strong>{shown}</strong> of <strong>{total}</strong>{" "}
