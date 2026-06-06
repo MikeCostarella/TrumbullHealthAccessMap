@@ -165,3 +165,43 @@ body {
 .leaflet-tooltip.user-location-tooltip::before {
   border-top-color: #00658a !important;
 }
+
+/* ---- Permanent municipal / township name labels ----
+   Rendered as non-interactive divIcon markers centered on each boundary
+   (see PovertyLayer). The divIcon anchors at (0,0) on the centroid, so we
+   translate(-50%, -50%) to center the text. A white halo (layered
+   text-shadow) keeps the text legible over the gray basemap and through the
+   poverty choropleth fill. Ported from the original app. */
+.boundary-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  text-align: center;
+  line-height: 1.1;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 -1px 0 rgba(255, 255, 255, 0.95),
+    1px 0 0 rgba(255, 255, 255, 0.95),
+    -1px 0 0 rgba(255, 255, 255, 0.95),
+    1px 1px 1.5px rgba(255, 255, 255, 0.85),
+    -1px -1px 1.5px rgba(255, 255, 255, 0.85),
+    1px -1px 1.5px rgba(255, 255, 255, 0.85),
+    -1px 1px 1.5px rgba(255, 255, 255, 0.85);
+}
+
+/* Townships — subordinate: italic, gray, smaller */
+.township-label {
+  font: italic 600 0.78rem "Inter", sans-serif;
+  color: #5a5347;
+  letter-spacing: 0.02em;
+}
+
+/* Municipalities — primary: navy, larger, uppercase */
+.muni-label {
+  font: 700 0.85rem "Inter", sans-serif;
+  color: var(--navy-deep);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

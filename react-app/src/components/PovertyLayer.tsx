@@ -30,6 +30,9 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
   const map = useMap();
   const fillPaneRef = useRef<HTMLElement | null>(null);
   const loadedRef = useRef(false);
+  // Permanent boundary name labels, tracked so a zoom handler can show/hide
+  // them by tier (munis at zoom >= 10, townships at zoom >= 11).
+  const labelMarkersRef = useRef<L.Marker[]>([]);
 
   // One-time setup: create panes and fetch both boundary layers.
   useEffect(() => {
@@ -44,6 +47,46 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
     townshipPane.style.zIndex = "350";
     const muniPane = map.createPane("munis");
     muniPane.style.zIndex = "360";
+    // Permanent place-name labels sit above the outlines but still below the
+    // facility markers (600), so a label never hides a clickable marker.
+    const labelPane = map.createPane("boundaryLabels");
+    labelPane.style.zIndex = "370";
+    labelPane.style.pointerEvents = "none";
+
+    // Permanent name label centered on a boundary feature, ported from the
+    // original app. Uses the bounds-center (fast, good enough for these mostly
+    // compact shapes) and a non-interactive divIcon so it never blocks clicks.
+    // `kind` selects the CSS styling: munis are uppercase navy, townships are
+    // italic gray and subordinate.
+    const addBoundaryLabel = (
+      layer: L.Layer,
+      displayName: string,
+      kind: "township" | "muni",
+    ) => {
+      let center: L.LatLng;
+      try {
+        center = (layer as L.Polygon).getBounds().getCenter();
+      } catch {
+        return; // skip features without geometry
+      }
+      const labelClass =
+        kind === "township"
+          ? "boundary-label township-label"
+          : "boundary-label muni-label";
+      const labelMarker = L.marker(center, {
+        pane: "boundaryLabels",
+        interactive: false,
+        keyboard: false,
+        icon: L.divIcon({
+          className: "",
+          html: `<div class="${labelClass}">${displayName}</div>`,
+          iconSize: undefined, // let CSS size the label
+          iconAnchor: [0, 0],
+        }),
+      });
+      labelMarkersRef.current.push(labelMarker);
+      labelMarker.addTo(map);
+    };
 
     const buildFill = (geo: GeoJsonObject, fillOpacity: number) =>
       L.geoJSON(geo, {
@@ -78,7 +121,7 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
       geo: GeoJsonObject,
       pane: string,
       style: L.PathOptions,
-      labelSuffix: string,
+      kind: "township" | "muni",
     ) =>
       L.geoJSON(geo, {
         pane,
@@ -90,11 +133,10 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
               .replace(/\s+TOWNSHIP\s*$/i, "")
               .replace(/\s+/g, " ")
               .trim();
-            layer.bindTooltip(`${pretty}${labelSuffix}`, {
-              sticky: true,
-              className: "boundary-tooltip",
-              direction: "center",
-            });
+            const suffix = kind === "township" ? " Township" : "";
+            // Permanent place-name label (replaces the old hover tooltip so the
+            // names are always visible, matching the original app).
+            addBoundaryLabel(layer, `${pretty}${suffix}`, kind);
           }
           // Outlines must not intercept marker clicks.
           layer.on("add", () => {
@@ -103,6 +145,23 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
           });
         },
       }).addTo(map);
+
+    // Show labels only when zoomed in enough to be readable: munis at zoom
+    // >= 10 (residents orient by city/village name), townships at >= 11
+    // (subordinate, would clutter the county overview). Matches the original.
+    const updateLabelVisibility = () => {
+      const z = map.getZoom();
+      labelMarkersRef.current.forEach((m) => {
+        const el = m.getElement();
+        if (!el) return;
+        const labelEl = el.querySelector<HTMLElement>(".boundary-label");
+        if (!labelEl) return;
+        const isTownship = labelEl.classList.contains("township-label");
+        const threshold = isTownship ? 11 : 10;
+        labelEl.style.display = z >= threshold ? "" : "none";
+      });
+    };
+    map.on("zoomend", updateLabelVisibility);
 
     // Townships (layer 109): fill first, then dashed outline.
     fetch(`${BOUNDARY_BASE}/109${BOUNDARY_QUERY}`)
@@ -120,8 +179,9 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
             fillOpacity: 0,
             dashArray: "5,5",
           },
-          " Township",
+          "township",
         );
+        updateLabelVisibility();
       })
       .catch(() => {
         /* silent — overlay is nice-to-have */
@@ -143,12 +203,17 @@ export function PovertyLayer({ visible }: PovertyLayerProps) {
             fillColor: "#1F3A5F",
             fillOpacity: 0.025,
           },
-          "",
+          "muni",
         );
+        updateLabelVisibility();
       })
       .catch(() => {
         /* silent */
       });
+
+    return () => {
+      map.off("zoomend", updateLabelVisibility);
+    };
   }, [map]);
 
   // Reflect the `visible` prop by toggling only the poverty fill pane. The
