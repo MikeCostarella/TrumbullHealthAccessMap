@@ -104,6 +104,14 @@
   min-height: 0;
 }
 
+/* While the filter panel is open it covers the map's top-left corner, where
+   Leaflet's zoom control sits — overlapping the panel contents. The control
+   is unreachable under the panel anyway, so hide it until the panel closes.
+   :global reaches Leaflet's unscoped control class from this CSS module. */
+.filtersOpen :global(.leaflet-control-zoom) {
+  display: none;
+}
+
 .toolbarWrap {
   position: relative;
   z-index: 500;

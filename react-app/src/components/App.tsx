@@ -114,7 +114,11 @@ export default function App() {
           />
         )}
 
-        <div className={styles.mapArea}>
+        <div
+          className={`${styles.mapArea} ${
+            filtersOpen ? styles.filtersOpen : ""
+          }`}
+        >
           <div className={styles.toolbarWrap}>
             <Toolbar
               search={filters.search}
