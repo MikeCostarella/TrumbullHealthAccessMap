@@ -121,11 +121,37 @@ function locate(lng, lat, features, nameFn) {
   return null;
 }
 
+/** Title-case a possibly all-caps GIS name, preserving normal word casing.
+ *  "WARREN" -> "Warren", "WEST FARMINGTON" -> "West Farmington". A small
+ *  fix-up table restores intercapitalized names the naive title-caser would
+ *  flatten (e.g. "MCDONALD" -> "McDonald"). */
+const NAME_FIXUPS = { Mcdonald: "McDonald" };
+
+function titleCase(s) {
+  const t = s
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+  return NAME_FIXUPS[t] ?? t;
+}
+
+/** Canonicalize a raw GIS muni/township name to its bare jurisdiction name,
+ *  matching src/data/jurisdictions.ts. The county GIS NAME field embeds the
+ *  classification ("WARREN CITY", "NEWTON FALLS VILLAGE"), and TOWNSHIP names
+ *  may arrive all-caps — strip the trailing CITY/VILLAGE/TOWNSHIP word and
+ *  title-case the rest so "WARREN CITY" -> "Warren", "NEWTON FALLS VILLAGE" ->
+ *  "Newton Falls". */
+function bareName(raw) {
+  return titleCase(
+    String(raw).replace(/\s+(CITY|VILLAGE|TOWNSHIP|TWP)\.?$/i, ""),
+  );
+}
+
 function labelMuni(name) {
-  if (CITY_NAMES.has(name)) return `${name} (City)`;
-  if (VILLAGE_NAMES.has(name)) return `${name} (Village)`;
-  // Unknown muni name from GIS — keep it, but flag in the label so it's visible.
-  return `${name} (City)`;
+  const bare = bareName(name);
+  if (VILLAGE_NAMES.has(bare)) return `${bare} (Village)`;
+  // Everything else from the muni layer is an incorporated city.
+  return `${bare} (City)`;
 }
 
 async function main() {
@@ -159,7 +185,7 @@ async function main() {
         jurisdiction = labelMuni(muniName);
       } else {
         const twpName = locate(lng, lat, twp.features, (p) => p.TOWNSHIP);
-        jurisdiction = twpName ? `${twpName} (Township)` : OUTSIDE_COUNTY;
+        jurisdiction = twpName ? `${bareName(twpName)} (Township)` : OUTSIDE_COUNTY;
       }
     }
     if (jurisdiction === OUTSIDE_COUNTY) outside++;
