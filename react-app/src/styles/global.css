@@ -205,3 +205,11 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+
+/* The filter panel opens as a full-width dropdown anchored to the top of the
+   map, covering the top-left corner where Leaflet's zoom control lives. Nudge
+   the zoom control down so the +/- buttons clear the panel's "Services
+   Offered" header instead of overlapping it. */
+.leaflet-top.leaflet-left {
+  top: 64px;
+}
