@@ -51,6 +51,11 @@ export interface Resource {
   phone: string | null;
   web: string | null;
   services: ResourceServices;
+  /** Trumbull County jurisdiction (e.g. "Warren (City)", "Howland
+   *  (Township)", or "Outside Trumbull County"), assigned by point-in-polygon
+   *  at data-convert time. Distinct from `city`, which is the mailing city.
+   *  Drives the City filter. */
+  jurisdiction: string;
 }
 
 /**
@@ -71,4 +76,6 @@ export interface RawResource {
   phone: string | null;
   web: string | null;
   services: ResourceServices;
+  /** Optional on disk: present once assign-jurisdictions.mjs has run. */
+  jurisdiction?: string;
 }

@@ -46,10 +46,8 @@ export default function App() {
     FACILITY_TYPES_IN_ORDER,
     initFilterState,
   );
-  const { filtered, countsByType, cities, specialties } = useFilteredResources(
-    resources,
-    filters,
-  );
+  const { filtered, countsByType, cities, cityCounts, specialties } =
+    useFilteredResources(resources, filters);
 
   const [selected, setSelected] = useState<Resource | null>(null);
   const [legendOpen, setLegendOpen] = useState(false); // mobile drawer
@@ -130,6 +128,7 @@ export default function App() {
               open={filtersOpen}
               filters={filters}
               cities={cities}
+              cityCounts={cityCounts}
               specialties={specialties}
               onToggleService={(service) =>
                 dispatch({ type: "toggleService", service })

@@ -1,14 +1,17 @@
 import { useMemo } from "react";
 import type { FacilityType, Resource } from "../types/resource";
 import type { FilterState } from "../state/filterReducer";
+import { JURISDICTION_OPTIONS } from "../data/jurisdictions";
 
 export interface FilteredResult {
   /** Resources passing all active filters — drives the markers. */
   filtered: Resource[];
   /** Total count per facility type across ALL resources (legend badges). */
   countsByType: Map<FacilityType, number>;
-  /** Sorted unique cities present in the data (for the city filter group). */
+  /** Fixed, ordered list of jurisdiction filter labels (all 35 + outside). */
   cities: string[];
+  /** Provider count per jurisdiction label across ALL resources. */
+  cityCounts: Map<string, number>;
   /** Sorted unique specialties present in the data (specialty filter group). */
   specialties: string[];
 }
@@ -31,7 +34,7 @@ function matches(r: Resource, f: FilterState): boolean {
     if (!r.services[key]) return false;
   }
 
-  if (f.cities.size > 0 && !f.cities.has(r.city)) return false;
+  if (f.cities.size > 0 && !f.cities.has(r.jurisdiction)) return false;
   if (f.specialties.size > 0 && r.specialty && !f.specialties.has(r.specialty)) {
     return false;
   }
@@ -44,20 +47,22 @@ export function useFilteredResources(
   resources: Resource[],
   filters: FilterState,
 ): FilteredResult {
-  // Per-type totals and the city/specialty option lists depend only on the
-  // data, so compute them once and reuse across filter changes.
-  const { countsByType, cities, specialties } = useMemo(() => {
+  // Per-type totals, per-jurisdiction counts, and the specialty option list
+  // depend only on the data, so compute them once and reuse across filter
+  // changes. The jurisdiction list itself is FIXED (all 35 + outside), so
+  // every option shows even at zero — we only tally counts here.
+  const { countsByType, cityCounts, specialties } = useMemo(() => {
     const counts = new Map<FacilityType, number>();
-    const citySet = new Set<string>();
+    const cityTally = new Map<string, number>();
     const specSet = new Set<string>();
     for (const r of resources) {
       counts.set(r.type, (counts.get(r.type) ?? 0) + 1);
-      if (r.city) citySet.add(r.city);
+      cityTally.set(r.jurisdiction, (cityTally.get(r.jurisdiction) ?? 0) + 1);
       if (r.specialty) specSet.add(r.specialty);
     }
     return {
       countsByType: counts,
-      cities: [...citySet].sort((a, b) => a.localeCompare(b)),
+      cityCounts: cityTally,
       specialties: [...specSet].sort((a, b) => a.localeCompare(b)),
     };
   }, [resources]);
@@ -67,5 +72,11 @@ export function useFilteredResources(
     [resources, filters],
   );
 
-  return { filtered, countsByType, cities, specialties };
+  return {
+    filtered,
+    countsByType,
+    cities: [...JURISDICTION_OPTIONS],
+    cityCounts,
+    specialties,
+  };
 }

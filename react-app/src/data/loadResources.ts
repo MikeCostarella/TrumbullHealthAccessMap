@@ -1,5 +1,6 @@
 import type { FacilityType, RawResource, Resource } from "../types/resource";
 import { TYPE_META } from "./facilityTypes";
+import { OUTSIDE_COUNTY } from "./jurisdictions";
 
 /**
  * The single seam between the app and its data source.
@@ -50,5 +51,6 @@ export async function loadResources(
   return (raw as RawResource[]).filter(isMappable).map((r) => ({
     ...r,
     type: normalizeType(r.type),
+    jurisdiction: r.jurisdiction ?? OUTSIDE_COUNTY,
   }));
 }

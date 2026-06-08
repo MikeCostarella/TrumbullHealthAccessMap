@@ -8,6 +8,7 @@ interface FilterPanelProps {
   open: boolean;
   filters: FilterState;
   cities: string[];
+  cityCounts: Map<string, number>;
   specialties: string[];
   onToggleService: (s: keyof ResourceServices) => void;
   onToggleCity: (c: string) => void;
@@ -19,6 +20,7 @@ export function FilterPanel({
   open,
   filters,
   cities,
+  cityCounts,
   specialties,
   onToggleService,
   onToggleCity,
@@ -55,16 +57,25 @@ export function FilterPanel({
         <div className={styles.group}>
           <h3 className={styles.groupTitle}>City</h3>
           <div className={`${styles.options} ${styles.scrollList}`}>
-            {cities.map((c) => (
-              <label key={c} className={styles.option}>
-                <input
-                  type="checkbox"
-                  checked={filters.cities.has(c)}
-                  onChange={() => onToggleCity(c)}
-                />
-                {c}
-              </label>
-            ))}
+            {cities.map((c) => {
+              const count = cityCounts.get(c) ?? 0;
+              return (
+                <label
+                  key={c}
+                  className={`${styles.option} ${styles.cityOption} ${
+                    count === 0 ? styles.empty : ""
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={filters.cities.has(c)}
+                    onChange={() => onToggleCity(c)}
+                  />
+                  <span className={styles.cityName}>{c}</span>
+                  <span className={styles.cityCount}>{count}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
 

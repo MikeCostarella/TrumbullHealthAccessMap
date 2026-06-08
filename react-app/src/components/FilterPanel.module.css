@@ -104,3 +104,24 @@
     gap: 18px;
   }
 }
+
+/* City filter rows: checkbox · name (flex-grow) · right-aligned count.
+   Counts come from a point-in-polygon jurisdiction assignment, so every one
+   of the 35 county jurisdictions appears; those with no providers are greyed
+   via .empty but stay toggleable. */
+.cityName {
+  flex: 1 1 auto;
+}
+
+.cityCount {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+  color: var(--muted, #6b7280);
+}
+
+.cityOption.empty .cityName,
+.cityOption.empty .cityCount {
+  opacity: 0.45;
+}
