@@ -3,7 +3,10 @@
   top: calc(100% + 6px);
   left: 0;
   right: 0;
-  z-index: 600;
+  /* Above Leaflet's map controls (.leaflet-control defaults to z-index 1000),
+     otherwise the zoom +/- buttons overlap the panel's top-left corner and
+     clip the "Services Offered" heading. */
+  z-index: 1100;
   background: var(--bg-card);
   border: 1px solid var(--rule-soft);
   border-radius: 8px;
