@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { Resource } from "../types/resource";
 import { metaFor } from "../data/facilityTypes";
 import { SERVICE_FILTERS } from "../data/filters";
+import { OUTSIDE_COUNTY } from "../data/jurisdictions";
 import styles from "./ResourceModal.module.css";
 
 interface ResourceModalProps {
@@ -90,6 +91,13 @@ export function ResourceModal({ resource, onClose }: ResourceModalProps) {
                   Get Directions
                 </a>
               </div>
+            </div>
+          )}
+
+          {r.jurisdiction && r.jurisdiction !== OUTSIDE_COUNTY && (
+            <div className={styles.section}>
+              <div className={styles.label}>Jurisdiction</div>
+              <div className={styles.kv}>{r.jurisdiction}</div>
             </div>
           )}
 
