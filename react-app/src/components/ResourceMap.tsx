@@ -13,10 +13,12 @@ const ZOOM = 12;
 const MIN_ZOOM = 10; // keep place labels legible
 const MAX_ZOOM = 16; // Esri Light Gray Canvas tiles stop at 16
 
-// Esri World Light Gray Canvas (legacy ArcGIS Online tile service).
+// Esri World Street Map (legacy ArcGIS Online tile service). Chosen over the
+// muted gray canvas because street/place labels stay legible at the
+// neighborhood zoom levels users actually browse at.
 // Attribution to Esri is required by their terms of use.
-const ESRI_STYLE = "Canvas/World_Light_Gray_Base";
-const TILE_URL = `https://server.arcgisonline.com/ArcGIS/rest/services/${ESRI_STYLE}/MapServer/tile/{z}/{y}/{x}`;
+const TILE_URL =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
 const TILE_ATTRIBUTION = "Tiles &copy; Esri \u2014 Esri, DeLorme, NAVTEQ";
 
 interface ResourceMapProps {
