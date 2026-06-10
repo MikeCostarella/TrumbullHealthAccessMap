@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
+import { locateJurisdiction } from "../utils/locateJurisdiction";
 
 /**
  * "You are here" geolocation marker, ported from the original app
@@ -87,6 +88,42 @@ export function UserLocationLayer() {
             offset: [0, -4],
             permanent: true, // always visible — don't hide on mouseout
           });
+
+          // Click → detail popup: GPS coordinates (copy-pasteable into any
+          // maps app), reported accuracy, and the Trumbull jurisdiction.
+          // The jurisdiction needs a boundary fetch + point-in-polygon, so
+          // it resolves lazily after the popup opens; coordinates show
+          // immediately. 5 decimals ≈ 1 m, matching GPS precision.
+          const coordsText = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+          const accuracy = position.coords.accuracy;
+          const accuracyRow = Number.isFinite(accuracy)
+            ? `<div class="ulp-row"><span class="ulp-label">Accuracy</span>&plusmn;${Math.round(accuracy)} m</div>`
+            : "";
+          const baseHtml =
+            '<div class="ulp">' +
+            '<div class="ulp-title">Your location</div>' +
+            `<div class="ulp-row"><span class="ulp-label">GPS</span>${coordsText}</div>` +
+            accuracyRow;
+
+          userMarker.bindPopup(
+            baseHtml +
+              '<div class="ulp-row"><span class="ulp-label">Jurisdiction</span>Looking up&hellip;</div>' +
+              "</div>",
+            { offset: [0, -8], className: "user-location-popup" },
+          );
+
+          let jurisdictionHtml: string | null = null;
+          userMarker.on("popupopen", () => {
+            if (jurisdictionHtml !== null) return; // already resolved
+            locateJurisdiction(lat, lng).then((jur) => {
+              // Omit the line entirely if the boundary lookup failed.
+              jurisdictionHtml = jur
+                ? `<div class="ulp-row"><span class="ulp-label">Jurisdiction</span>${jur}</div>`
+                : "";
+              userMarker?.setPopupContent(baseHtml + jurisdictionHtml + "</div>");
+            });
+          });
+
           userMarker.addTo(map);
 
           // Inside Trumbull proper → neighborhood zoom (13); in the southern
@@ -107,7 +144,8 @@ export function UserLocationLayer() {
         },
         {
           enableHighAccuracy: false, // desktop wifi-positioning is fine
-          timeout: 8000,
+          timeout: 20000, // cold wifi/IP fixes on desktop can exceed 8s;
+          // a short timeout silently drops the marker on first visits
           maximumAge: 5 * 60 * 1000, // cached position up to 5 min is OK
         },
       );
@@ -119,6 +157,10 @@ export function UserLocationLayer() {
         userMarker.remove();
         userMarker = null;
       }
+      // Reset the one-shot guard so a remount (e.g. React StrictMode's
+      // mount→unmount→remount in dev) re-runs the request rather than
+      // bailing on a guard left tripped by the discarded first mount.
+      requestedRef.current = false;
     };
   }, [map]);
 

@@ -206,3 +206,36 @@ body {
   letter-spacing: 0.06em;
 }
 
+
+/* "Your location" detail popup on the geolocation marker. */
+.user-location-popup .leaflet-popup-content {
+  margin: 12px 14px;
+}
+
+.ulp {
+  font: 500 0.82rem "Inter", sans-serif;
+  color: var(--ink);
+  min-width: 180px;
+}
+
+.ulp-title {
+  font: 700 0.68rem "Inter", sans-serif;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted, #6b7280);
+  margin-bottom: 7px;
+}
+
+.ulp-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.ulp-label {
+  flex: 0 0 76px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-soft, #6b7280);
+}
