@@ -5,14 +5,13 @@ import styles from "./PovertyControls.module.css";
 
 interface PovertyControlsProps {
   visible: boolean;
-  onToggle: () => void;
 }
 
-/** The "Poverty rate" toggle button (top-right of the map) plus the
- *  collapsible legend (bottom-left), shown only when the overlay is on.
- *  The legend starts collapsed on mobile and auto-collapses when the
- *  viewport crosses into mobile width. */
-export function PovertyControls({ visible, onToggle }: PovertyControlsProps) {
+/** The poverty-rate legend (bottom-left), shown only when the overlay is on.
+ *  The on/off toggle itself lives in MapLayersControl. The legend starts
+ *  collapsed on mobile and auto-collapses when the viewport crosses into
+ *  mobile width. */
+export function PovertyControls({ visible }: PovertyControlsProps) {
   const isMobile = useIsMobile();
   const [legendOpen, setLegendOpen] = useState(!isMobile);
 
@@ -23,16 +22,6 @@ export function PovertyControls({ visible, onToggle }: PovertyControlsProps) {
 
   return (
     <>
-      <button
-        className={styles.toggle}
-        aria-pressed={visible}
-        onClick={onToggle}
-        aria-label="Toggle poverty rate overlay"
-      >
-        <span className={styles.dot} />
-        <span>Poverty rate</span>
-      </button>
-
       {visible && (
         <div
           className={`${styles.legend} ${legendOpen ? "" : styles.collapsed}`}

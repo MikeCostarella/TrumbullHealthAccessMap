@@ -5,15 +5,14 @@ import styles from "./LifeExpectancyControls.module.css";
 
 interface LifeExpectancyControlsProps {
   visible: boolean;
-  onToggle: () => void;
 }
 
-/** "Life expectancy" toggle (top-right) + its own legend (bottom-right).
- *  The legend starts collapsed on mobile and auto-collapses when the
- *  viewport crosses into mobile width. */
+/** Life-expectancy legend (bottom-right), shown only when the overlay is on.
+ *  The on/off toggle itself lives in MapLayersControl. The legend starts
+ *  collapsed on mobile and auto-collapses when the viewport crosses into
+ *  mobile width. */
 export function LifeExpectancyControls({
   visible,
-  onToggle,
 }: LifeExpectancyControlsProps) {
   const isMobile = useIsMobile();
   const [legendOpen, setLegendOpen] = useState(!isMobile);
@@ -25,16 +24,6 @@ export function LifeExpectancyControls({
 
   return (
     <>
-      <button
-        className={styles.toggle}
-        aria-pressed={visible}
-        onClick={onToggle}
-        aria-label="Toggle life expectancy overlay"
-      >
-        <span className={styles.dot} />
-        <span>Life expectancy</span>
-      </button>
-
       {visible && (
         <div
           className={`${styles.legend} ${legendOpen ? "" : styles.collapsed}`}

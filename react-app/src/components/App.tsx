@@ -15,6 +15,7 @@ import { FilterPanel } from "./FilterPanel";
 import { ResourceModal } from "./ResourceModal";
 import { PovertyControls } from "./PovertyControls";
 import { LifeExpectancyControls } from "./LifeExpectancyControls";
+import { MapLayersControl } from "./MapLayersControl";
 import styles from "./App.module.css";
 
 // Format the compile-time build timestamp (injected by Vite) into the
@@ -163,17 +164,15 @@ export default function App() {
               />
             )}
             {ready && (
-              <LifeExpectancyControls
-                visible={leVisible}
-                onToggle={() => setLeVisible((v) => !v)}
+              <MapLayersControl
+                leVisible={leVisible}
+                povertyVisible={povertyVisible}
+                onToggleLe={() => setLeVisible((v) => !v)}
+                onTogglePoverty={() => setPovertyVisible((v) => !v)}
               />
             )}
-            {ready && (
-              <PovertyControls
-                visible={povertyVisible}
-                onToggle={() => setPovertyVisible((v) => !v)}
-              />
-            )}
+            {ready && <LifeExpectancyControls visible={leVisible} />}
+            {ready && <PovertyControls visible={povertyVisible} />}
             {ready && shown === 0 && (
               <div className={styles.noResults}>
                 <strong>No matches</strong>
