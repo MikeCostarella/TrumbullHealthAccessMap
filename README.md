@@ -9,7 +9,7 @@ The project is a civic-data effort: it takes public provider records, geocodes
 and categorizes them, and presents them on a map that anyone can use to find
 care or understand how access is distributed across the county.
 
-🔗 **Live map:** _coming soon_ (deploying via GitHub Pages)
+🗺️ **Live map:** **[mikecostarella.github.io/TrumbullHealthAccessMap](https://mikecostarella.github.io/TrumbullHealthAccessMap/)**
 
 ---
 
@@ -17,8 +17,8 @@ care or understand how access is distributed across the county.
 
 | Folder | What it is |
 | --- | --- |
-| [`react-app/`](./react-app) | **The current app.** A Vite + React + TypeScript rewrite using Leaflet for mapping. This is where active development happens. |
-| [`Latest/`](./Latest) | **The previous version** — a single-file HTML/JS app. Kept as a working reference while the React rewrite is built out. |
+| [`react-app/`](./react-app) | **The live app.** A Vite + React + TypeScript app using Leaflet for mapping. This is the deployed map and where active development happens. |
+| [`Latest/`](./Latest) | **The previous version** — a single-file HTML/JS app, superseded by `react-app/`. Kept for historical reference. |
 | [`Data/`](./Data) | **Source data.** Provider spreadsheets (Trumbull County and statewide Ohio), the cleaned dataset, and Supabase schema used in processing. |
 
 ## The app (`react-app/`)
@@ -28,9 +28,7 @@ A React + TypeScript single-page app built with Vite and
 dataset of care facilities and renders them as categorized, filterable map
 markers, with demographic overlays for context.
 
-**Status:** mid-migration from the original single-file app. The data layer,
-type system, and build/deploy pipeline are in place; the map UI is being ported
-next. See [`react-app/README.md`](./react-app/README.md) for developer details.
+**Status:** live and in active development. The React app is the deployed map, with the data layer, type system, and build/deploy pipeline all in place. Recent work includes a two-source provider merge (~1,316 in-county providers), jurisdiction-based filtering, poverty-rate and life-expectancy overlays, and a geolocation "You are here" feature. See `react-app/README.md` for developer details.
 
 ### Run it locally
 
